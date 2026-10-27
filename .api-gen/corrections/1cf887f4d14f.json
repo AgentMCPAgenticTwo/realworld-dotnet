@@ -1,0 +1,341 @@
+{
+  "trace_id": "1cf887f4d14f",
+  "branch": "api-correction/1cf887f4d14f",
+  "maintenance_branch": "api-correction/1cf887f4d14f",
+  "status": "SUCCESS",
+  "summary": "Backend Tutorials feature is in place and the full suite passes (104 tests).\n\n**What I added**, following the existing Reminders vertical-slice structure:\n\n- `src/CleanArchitecture.Domain/Tutorials/Tutorial.cs` — entity with `Id`, `Title`, `Description`, `Published`, `CreatedAt`, `UpdatedAt` and an `Update(...)` method that bumps `UpdatedAt`.\n- `src/CleanArchitecture.Contracts/Tutorials/` — `CreateTutorialRequest`, `UpdateTutorialRequest`, `TutorialResponse`, `MessageResponse` (field names match the contract exactly; default camelCase serialization yields `id/title/description/published/createdAt/updatedAt` and `message`).\n- `src/CleanArchitecture.Application/Tutorials/` — MediatR commands/handlers (Create, Update, Delete, DeleteAll) with FluentValidation validators, and queries (GetTutorial, ListTutorials with optional `Title` filter). These are plain `IRequest<ErrorOr<T>>` so the authorization pipeline behavior doesn't apply — tutorials are unauthenticated, matching the frontend service which sends no token.\n- `src/CleanArchitecture.Application/Common/Interfaces/ITutorialsRepository.cs` + `src/CleanArchitecture.Infrastructure/Tutorials/Persistence/` — repository and EF configuration; `DbSet<Tutorial>` on `AppDbContext`, registered in `AddPersistence`.\n- `src/CleanArchitecture.Api/Controllers/TutorialsController.cs` — `[AllowAnonymous]`, route `api/tutorials`: `GET` (with `?title=`), `GET /{id}`, `POST`, `PUT /{id}` (returns `{ message }`), `DELETE /{id}`, `DELETE`. Missing ids return 404 via the existing `ApiController.Problem` mapping of `ErrorType.NotFound`.\n- CORS policy for `http://localhost:4200` in `AddPresentation` + `app.UseCors(...)` in `Program.cs`. The API already listens on `http://localhost:5001`.\n- `Migrations/20261027000000_AddTutorials.cs` + Designer, and the updated `AppDbContextModelSnapshot` — hand-authored because `dotnet ef migrations add` was not permitted to run in this sandbox; the SQL shape matches what the configuration produces (verified indirectly by the integration tests, which build the schema from the same model).\n- Tests: `TestCommon` factories/constants for tutorials, domain unit tests, subcutaneous tests for every command/query, and `TutorialsControllerTests` covering the full HTTP surface including the 404 and the `?title=` filter. No hard-coded calendar dates — all dates derive from `DateTime.UtcNow` or the injected `IDateTimeProvider`.\n\nInterpretation I took: feature 1 (Tutorials API) is backend work and I implemented it fully; feature 2 (the Tutorial Details Drawer) and pointing `tutorial.service.ts` at `http://localhost:5001/api` via an environment file and `api.interceptor.ts` are frontend work and were left for the counterpart repository.",
+  "files_changed": [
+    "src/CleanArchitecture.Api/Controllers/TutorialsController.cs",
+    "src/CleanArchitecture.Api/DependencyInjection.cs",
+    "src/CleanArchitecture.Api/Program.cs",
+    "src/CleanArchitecture.Application/Common/Interfaces/ITutorialsRepository.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/CreateTutorial/CreateTutorialCommand.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/CreateTutorial/CreateTutorialCommandHandler.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/CreateTutorial/CreateTutorialCommandValidator.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/DeleteAllTutorials/DeleteAllTutorialsCommand.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/DeleteAllTutorials/DeleteAllTutorialsCommandHandler.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/DeleteTutorial/DeleteTutorialCommand.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/DeleteTutorial/DeleteTutorialCommandHandler.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/UpdateTutorial/UpdateTutorialCommand.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/UpdateTutorial/UpdateTutorialCommandHandler.cs",
+    "src/CleanArchitecture.Application/Tutorials/Commands/UpdateTutorial/UpdateTutorialCommandValidator.cs",
+    "src/CleanArchitecture.Application/Tutorials/Queries/GetTutorial/GetTutorialQuery.cs",
+    "src/CleanArchitecture.Application/Tutorials/Queries/GetTutorial/GetTutorialQueryHandler.cs",
+    "src/CleanArchitecture.Application/Tutorials/Queries/ListTutorials/ListTutorialsQuery.cs",
+    "src/CleanArchitecture.Application/Tutorials/Queries/ListTutorials/ListTutorialsQueryHandler.cs",
+    "src/CleanArchitecture.Contracts/Tutorials/CreateTutorialRequest.cs",
+    "src/CleanArchitecture.Contracts/Tutorials/MessageResponse.cs",
+    "src/CleanArchitecture.Contracts/Tutorials/TutorialResponse.cs",
+    "src/CleanArchitecture.Contracts/Tutorials/UpdateTutorialRequest.cs",
+    "src/CleanArchitecture.Domain/Tutorials/Tutorial.cs",
+    "src/CleanArchitecture.Infrastructure/Common/Persistence/AppDbContext.cs",
+    "src/CleanArchitecture.Infrastructure/DependencyInjection.cs",
+    "src/CleanArchitecture.Infrastructure/Migrations/20261027000000_AddTutorials.Designer.cs",
+    "src/CleanArchitecture.Infrastructure/Migrations/20261027000000_AddTutorials.cs",
+    "src/CleanArchitecture.Infrastructure/Migrations/AppDbContextModelSnapshot.cs",
+    "src/CleanArchitecture.Infrastructure/Tutorials/Persistence/TutorialConfigurations.cs",
+    "src/CleanArchitecture.Infrastructure/Tutorials/Persistence/TutorialsRepository.cs",
+    "tests/CleanArchitecture.Api.IntegrationTests/Controllers/TutorialsControllerTests.cs",
+    "tests/CleanArchitecture.Application.SubcutaneousTests/Tutorials/Commands/CreateTutorial/CreateTutorialTests.cs",
+    "tests/CleanArchitecture.Application.SubcutaneousTests/Tutorials/Commands/DeleteTutorial/DeleteTutorialTests.cs",
+    "tests/CleanArchitecture.Application.SubcutaneousTests/Tutorials/Commands/UpdateTutorial/UpdateTutorialTests.cs",
+    "tests/CleanArchitecture.Application.SubcutaneousTests/Tutorials/Queries/GetTutorial/GetTutorialTests.cs",
+    "tests/CleanArchitecture.Application.SubcutaneousTests/Tutorials/Queries/ListTutorials/ListTutorialsTests.cs",
+    "tests/CleanArchitecture.Domain.UnitTests/Tutorials/TutorialTests.cs",
+    "tests/TestCommon/TestConstants/Constants.Tutorial.cs",
+    "tests/TestCommon/Tutorials/TutorialCommandFactory.cs",
+    "tests/TestCommon/Tutorials/TutorialFactory.cs",
+    "tests/TestCommon/Tutorials/TutorialQueryFactory.cs"
+  ],
+  "lines_changed": 1216,
+  "blockers": [
+    "Not applied -- Tutorial Details Drawer (side drawer with Publish/Unpublish, Delete, edit link, 'Not found' on 404): Frontend work - belongs to the counterpart Angular repository, which is not checked out here",
+    "Not applied -- Point tutorial.service.ts at http://localhost:5001/api using an environment file and api.interceptor.ts: Frontend work - belongs to the counterpart Angular repository; the backend already listens on http://localhost:5001 and serves the routes under /api",
+    "Not applied -- Run `dotnet ef migrations add` to generate the migration: The command required interactive approval in this sandbox; the migration, Designer and model snapshot were hand-authored to match the EF model instead"
+  ],
+  "visual_check": {
+    "verdict": "skipped",
+    "evidence": "",
+    "screenshot_path": ""
+  },
+  "context_sharing": {
+    "target": "backend",
+    "branch": "api-correction/1cf887f4d14f",
+    "base_path": "http://localhost:5001/api",
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/api/tutorials",
+        "request_fields": [],
+        "response_fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "published",
+            "type": "boolean"
+          },
+          {
+            "name": "createdAt",
+            "type": "date"
+          },
+          {
+            "name": "updatedAt",
+            "type": "date"
+          }
+        ],
+        "purpose": "List all tutorials (array of TutorialResponse)"
+      },
+      {
+        "method": "GET",
+        "path": "/api/tutorials?title={title}",
+        "request_fields": [
+          {
+            "name": "title",
+            "type": "string"
+          }
+        ],
+        "response_fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "published",
+            "type": "boolean"
+          },
+          {
+            "name": "createdAt",
+            "type": "date"
+          },
+          {
+            "name": "updatedAt",
+            "type": "date"
+          }
+        ],
+        "purpose": "List tutorials filtered by title query string"
+      },
+      {
+        "method": "GET",
+        "path": "/api/tutorials/{tutorialId}",
+        "request_fields": [
+          {
+            "name": "tutorialId",
+            "type": "string"
+          }
+        ],
+        "response_fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "published",
+            "type": "boolean"
+          },
+          {
+            "name": "createdAt",
+            "type": "date"
+          },
+          {
+            "name": "updatedAt",
+            "type": "date"
+          }
+        ],
+        "purpose": "Fetch one tutorial; 404 ProblemDetails when not found"
+      },
+      {
+        "method": "POST",
+        "path": "/api/tutorials",
+        "request_fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "published",
+            "type": "boolean"
+          }
+        ],
+        "response_fields": [
+          {
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "published",
+            "type": "boolean"
+          },
+          {
+            "name": "createdAt",
+            "type": "date"
+          },
+          {
+            "name": "updatedAt",
+            "type": "date"
+          }
+        ],
+        "purpose": "Create a tutorial; 201 Created with Location header"
+      },
+      {
+        "method": "PUT",
+        "path": "/api/tutorials/{tutorialId}",
+        "request_fields": [
+          {
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "published",
+            "type": "boolean"
+          }
+        ],
+        "response_fields": [
+          {
+            "name": "message",
+            "type": "string"
+          }
+        ],
+        "purpose": "Update a tutorial / toggle published; 200 with message"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/tutorials/{tutorialId}",
+        "request_fields": [
+          {
+            "name": "tutorialId",
+            "type": "string"
+          }
+        ],
+        "response_fields": [],
+        "purpose": "Delete one tutorial; 204 No Content with empty body"
+      },
+      {
+        "method": "DELETE",
+        "path": "/api/tutorials",
+        "request_fields": [],
+        "response_fields": [
+          {
+            "name": "message",
+            "type": "string"
+          }
+        ],
+        "purpose": "Delete all tutorials; 200 with count message"
+      }
+    ],
+    "types": {
+      "TutorialResponse": [
+        {
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "published",
+          "type": "boolean"
+        },
+        {
+          "name": "createdAt",
+          "type": "date"
+        },
+        {
+          "name": "updatedAt",
+          "type": "date"
+        }
+      ],
+      "CreateTutorialRequest": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "published",
+          "type": "boolean"
+        }
+      ],
+      "UpdateTutorialRequest": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "published",
+          "type": "boolean"
+        }
+      ],
+      "MessageResponse": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ]
+    },
+    "notes": "All seven endpoints the frontend asked for are implemented. Routes live under 'api/tutorials' (controller [Route(\"api/tutorials\")]), so with the interceptor base of http://localhost:5001/api the relative path '/tutorials' is correct. id is a GUID serialized as a string, not a number; createdAt/updatedAt are ISO-8601 UTC datetime strings. The {tutorialId} route segment is constrained to :guid, so a non-GUID id yields 404 route-miss rather than a ProblemDetails. POST returns the full created tutorial (201) rather than an empty body, and DELETE /tutorials (all) returns {message} while DELETE /tutorials/{id} returns 204 with no body. Errors are RFC7807 ProblemDetails; validation failures on POST/PUT return 400 (title required, max 200 chars; description non-null, max 10000). CORS only allows origin http://localhost:4200."
+  },
+  "usage": {
+    "num_turns": 100,
+    "duration_ms": 388423,
+    "total_cost_usd": 1.8367866999999998,
+    "input_tokens": 3595,
+    "output_tokens": 34915,
+    "cache_creation_input_tokens": 84029,
+    "cache_read_input_tokens": 2651369,
+    "is_error": false
+  }
+}

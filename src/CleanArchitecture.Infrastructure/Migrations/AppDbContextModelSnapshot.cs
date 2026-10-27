@@ -43,6 +43,34 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.ToTable("Reminders");
                 });
 
+            modelBuilder.Entity("CleanArchitecture.Domain.Tutorials.Tutorial", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Published")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tutorials");
+                });
+
             modelBuilder.Entity("CleanArchitecture.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")

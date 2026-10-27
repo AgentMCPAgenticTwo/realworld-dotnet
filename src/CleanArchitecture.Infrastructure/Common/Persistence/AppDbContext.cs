@@ -1,5 +1,6 @@
 using CleanArchitecture.Domain.Common;
 using CleanArchitecture.Domain.Reminders;
+using CleanArchitecture.Domain.Tutorials;
 using CleanArchitecture.Domain.Users;
 using CleanArchitecture.Infrastructure.Common.Middleware;
 
@@ -15,6 +16,8 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
     public DbSet<Reminder> Reminders { get; set; } = null!;
 
     public DbSet<User> Users { get; set; } = null!;
+
+    public DbSet<Tutorial> Tutorials { get; set; } = null!;
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
