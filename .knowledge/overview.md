@@ -4,10 +4,10 @@ title: realworld-dotnet
 description: Clean Architecture .NET 8 reference service exposing reminder, subscription, token and tutorial HTTP APIs.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/
 tags: [dotnet, csharp, clean-architecture, aspnetcore, overview]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-28T04:15:17Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ 2650bfd28ce9976b5db0a140e2928725519d0af3
     title: Codebase knowledge graph
 status: stable
 ---
@@ -80,6 +80,7 @@ mapping `Conflict→409`, `Validation→400`, `NotFound→404`, `Unauthorized→
 | Run everything in containers | `docker-compose up` (see `docker-compose.yml`, `Dockerfile`) |
 | Run all tests | `dotnet test` |
 | CI | `.github/workflows/build.yml`; template publishing in `.github/workflows/publish.yml` |
+| Automated API correction runs | `.github/workflows/api-correction.yml` (manual/dispatch agent workflow) |
 
 # Configuration
 
