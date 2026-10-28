@@ -10,6 +10,8 @@ public class Tutorial : Entity
 
     public bool Published { get; private set; }
 
+    public Guid? CategoryId { get; private set; }
+
     public DateTime CreatedAt { get; private set; }
 
     public DateTime UpdatedAt { get; private set; }
@@ -19,21 +21,24 @@ public class Tutorial : Entity
         string description,
         bool published,
         DateTime createdAt,
+        Guid? categoryId = null,
         Guid? id = null)
             : base(id ?? Guid.NewGuid())
     {
         Title = title;
         Description = description;
         Published = published;
+        CategoryId = categoryId;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
     }
 
-    public void Update(string title, string description, bool published, DateTime updatedAt)
+    public void Update(string title, string description, bool published, Guid? categoryId, DateTime updatedAt)
     {
         Title = title;
         Description = description;
         Published = published;
+        CategoryId = categoryId;
         UpdatedAt = updatedAt;
     }
 

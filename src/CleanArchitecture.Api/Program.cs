@@ -14,6 +14,7 @@ var app = builder.Build();
 {
     app.UseExceptionHandler();
     app.UseInfrastructure();
+    app.ApplyMigrations();
 
     if (app.Environment.IsDevelopment())
     {

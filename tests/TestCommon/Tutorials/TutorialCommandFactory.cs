@@ -12,22 +12,25 @@ public static class TutorialCommandFactory
     public static CreateTutorialCommand CreateCreateTutorialCommand(
         string title = Constants.Tutorial.Title,
         string description = Constants.Tutorial.Description,
-        bool published = false)
+        bool published = false,
+        Guid? categoryId = null)
     {
-        return new CreateTutorialCommand(title, description, published);
+        return new CreateTutorialCommand(title, description, published, categoryId);
     }
 
     public static UpdateTutorialCommand CreateUpdateTutorialCommand(
         Guid? tutorialId = null,
         string title = Constants.Tutorial.Title,
         string description = Constants.Tutorial.Description,
-        bool published = true)
+        bool published = true,
+        Guid? categoryId = null)
     {
         return new UpdateTutorialCommand(
             tutorialId ?? Constants.Tutorial.Id,
             title,
             description,
-            published);
+            published,
+            categoryId);
     }
 
     public static DeleteTutorialCommand CreateDeleteTutorialCommand(Guid? tutorialId = null)

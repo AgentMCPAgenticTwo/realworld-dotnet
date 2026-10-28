@@ -11,6 +11,7 @@ public static class TutorialFactory
         string description = Constants.Tutorial.Description,
         bool published = false,
         DateTime? createdAt = null,
+        Guid? categoryId = null,
         Guid? id = null)
     {
         return new Tutorial(
@@ -18,6 +19,7 @@ public static class TutorialFactory
             description,
             published,
             createdAt ?? DateTime.UtcNow,
+            categoryId,
             id ?? Constants.Tutorial.Id);
     }
 }

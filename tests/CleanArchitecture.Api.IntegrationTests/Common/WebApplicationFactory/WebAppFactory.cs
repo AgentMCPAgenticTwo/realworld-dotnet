@@ -12,20 +12,21 @@ namespace CleanArchitecture.Api.IntegrationTests.Common.WebApplicationFactory;
 
 public class WebAppFactory : WebApplicationFactory<IAssemblyMarker>, IAsyncLifetime
 {
-    private SqliteTestDatabase _testDatabase = null!;
+    private PostgresTestDatabase _testDatabase = null!;
 
     public AppHttpClient CreateAppHttpClient()
     {
         return new AppHttpClient(CreateClient());
     }
 
-    public Task InitializeAsync() => Task.CompletedTask;
-
-    public new Task DisposeAsync()
+    public async Task InitializeAsync()
     {
-        _testDatabase.Dispose();
+        _testDatabase = await PostgresTestDatabase.CreateAndInitializeAsync();
+    }
 
-        return Task.CompletedTask;
+    public new async Task DisposeAsync()
+    {
+        await _testDatabase.DisposeAsync();
     }
 
     public void ResetDatabase()
@@ -35,11 +36,9 @@ public class WebAppFactory : WebApplicationFactory<IAssemblyMarker>, IAsyncLifet
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        _testDatabase = SqliteTestDatabase.CreateAndInitialize();
-
         builder.ConfigureTestServices(services => services
             .RemoveAll<DbContextOptions<AppDbContext>>()
-            .AddDbContext<AppDbContext>((sp, options) => options.UseSqlite(_testDatabase.Connection)));
+            .AddDbContext<AppDbContext>((sp, options) => options.UseNpgsql(_testDatabase.ConnectionString)));
 
         builder.ConfigureAppConfiguration((context, conf) => conf.AddInMemoryCollection(new Dictionary<string, string?>
         {

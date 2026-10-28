@@ -1,3 +1,4 @@
+using CleanArchitecture.Domain.Categories;
 using CleanArchitecture.Domain.Common;
 using CleanArchitecture.Domain.Reminders;
 using CleanArchitecture.Domain.Tutorials;
@@ -18,6 +19,8 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
     public DbSet<User> Users { get; set; } = null!;
 
     public DbSet<Tutorial> Tutorials { get; set; } = null!;
+
+    public DbSet<Category> Categories { get; set; } = null!;
 
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

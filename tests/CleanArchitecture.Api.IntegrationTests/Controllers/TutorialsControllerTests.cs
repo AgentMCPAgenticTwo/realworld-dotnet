@@ -37,6 +37,22 @@ public class TutorialsControllerTests
     }
 
     [Fact]
+    public async Task CreateTutorial_WhenPublishedIsOmitted_ShouldDefaultToFalse()
+    {
+        // Act
+        var createResponse = await _client.PostAsJsonAsync(
+            "api/tutorials",
+            new { title = "Angular basics", description = "An angular tutorial" });
+
+        // Assert
+        createResponse.Should().HaveStatusCode(HttpStatusCode.Created);
+
+        var created = (await createResponse.Content.ReadFromJsonAsync<TutorialResponse>())!;
+        created.Published.Should().BeFalse();
+        created.CategoryId.Should().BeNull();
+    }
+
+    [Fact]
     public async Task GetTutorial_WhenIdDoesNotExist_ShouldReturnNotFound()
     {
         // Act

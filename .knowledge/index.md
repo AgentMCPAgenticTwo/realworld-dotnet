@@ -6,8 +6,8 @@ okf_version: "0.2"
 
 # Start Here
 
-* [Codebase Overview](/overview.md) - Clean Architecture .NET 8 reference service exposing reminder, subscription, token and tutorial HTTP APIs.
-* [Architecture](/architecture.md) - Four-project onion layering with MediatR request pipeline, ErrorOr results and EF Core SQLite persistence.
+* [Codebase Overview](/overview.md) - Clean Architecture .NET 8 reference service exposing reminder, subscription, token, category and tutorial HTTP APIs over PostgreSQL.
+* [Architecture](/architecture.md) - Four-project onion layering with MediatR request pipeline, ErrorOr results and EF Core PostgreSQL persistence.
 * [Conventions](/conventions.md) - Naming, folder, result-handling, authorization and testing conventions used across the solution.
 
 # Modules

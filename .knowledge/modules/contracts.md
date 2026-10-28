@@ -4,10 +4,10 @@ title: src/CleanArchitecture.Contracts
 description: Wire DTO records shared between the API and its clients, grouped per feature.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/src/CleanArchitecture.Contracts
 tags: [contracts, dto, api]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-28T11:49:52Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ d56e8561a0fe55a0a123dab492ae019f009f7375
     title: Codebase knowledge graph
 status: stable
 ---
@@ -28,12 +28,18 @@ Application, so it can be shipped to clients independently.
 | `Subscriptions/SubscriptionResponse.cs` | `SubscriptionResponse` |
 | `Reminders/CreateReminderRequest.cs` | `CreateReminderRequest` |
 | `Reminders/ReminderResponse.cs` | `ReminderResponse` |
-| `Tutorials/CreateTutorialRequest.cs` | `CreateTutorialRequest` |
-| `Tutorials/UpdateTutorialRequest.cs` | `UpdateTutorialRequest` |
-| `Tutorials/TutorialResponse.cs` | `TutorialResponse` |
+| `Tutorials/CreateTutorialRequest.cs` | `CreateTutorialRequest(Title, Description, Published, CategoryId = null)` |
+| `Tutorials/UpdateTutorialRequest.cs` | `UpdateTutorialRequest(Title, Description, Published, CategoryId = null)` |
+| `Tutorials/TutorialResponse.cs` | `TutorialResponse(Id, Title, Description, Published, CategoryId, CreatedAt, UpdatedAt)` |
 | `Tutorials/MessageResponse.cs` | `MessageResponse` — plain `{ message }` envelope for mutations that return no entity |
+| `Categories/CreateCategoryRequest.cs` | `CreateCategoryRequest(Name)` |
+| `Categories/CategoryResponse.cs` | `CategoryResponse(Id, Name)` |
 
 # Notes
+
+`CategoryId` is an optional `Guid?` with a `null` default on both tutorial request records, so
+existing clients that omit it keep working and an unfiled tutorial round-trips as `CategoryId:
+null`.
 
 Mapping between these records and domain/result types happens in private static `ToDto` methods on
 the controllers in [Api](/modules/api.md). The contracts `SubscriptionType` is intentionally a

@@ -22,14 +22,16 @@ public class TutorialTests
         var createdAt = DateTime.UtcNow;
         var tutorial = TutorialFactory.CreateTutorial(createdAt: createdAt);
         var updatedAt = createdAt.AddMinutes(5);
+        var categoryId = Guid.NewGuid();
 
         // Act
-        tutorial.Update("New title", "New description", published: true, updatedAt);
+        tutorial.Update("New title", "New description", published: true, categoryId, updatedAt);
 
         // Assert
         tutorial.Title.Should().Be("New title");
         tutorial.Description.Should().Be("New description");
         tutorial.Published.Should().BeTrue();
+        tutorial.CategoryId.Should().Be(categoryId);
         tutorial.CreatedAt.Should().Be(createdAt);
         tutorial.UpdatedAt.Should().Be(updatedAt);
     }
