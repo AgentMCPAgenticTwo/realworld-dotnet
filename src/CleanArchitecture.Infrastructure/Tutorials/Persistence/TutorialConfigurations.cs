@@ -1,3 +1,4 @@
+using CleanArchitecture.Domain.Categories;
 using CleanArchitecture.Domain.Tutorials;
 
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,13 @@ public class TutorialConfigurations : IEntityTypeConfiguration<Tutorial>
         builder.Property(t => t.Description);
 
         builder.Property(t => t.Published);
+
+        builder.Property(t => t.CategoryId);
+
+        builder.HasOne<Category>()
+            .WithMany()
+            .HasForeignKey(t => t.CategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
 
         builder.Property(t => t.CreatedAt);
 

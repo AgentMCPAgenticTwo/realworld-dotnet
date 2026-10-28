@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Mail;
 
 using CleanArchitecture.Application.Common.Interfaces;
+using CleanArchitecture.Infrastructure.Categories.Persistence;
 using CleanArchitecture.Infrastructure.Common;
 using CleanArchitecture.Infrastructure.Reminders.BackgroundServices;
 using CleanArchitecture.Infrastructure.Reminders.Persistence;
@@ -31,7 +32,7 @@ public static class DependencyInjection
             .AddBackgroundServices(configuration)
             .AddAuthentication(configuration)
             .AddAuthorization()
-            .AddPersistence();
+            .AddPersistence(configuration);
 
         return services;
     }
@@ -77,10 +78,13 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddPersistence(this IServiceCollection services)
+    private static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source = CleanArchitecture.sqlite"));
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+        services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+        services.AddScoped<ICategoriesRepository, CategoriesRepository>();
         services.AddScoped<IRemindersRepository, RemindersRepository>();
         services.AddScoped<ITutorialsRepository, TutorialsRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();

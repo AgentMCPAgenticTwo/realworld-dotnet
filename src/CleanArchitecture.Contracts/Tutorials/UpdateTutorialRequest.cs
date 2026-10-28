@@ -3,4 +3,5 @@ namespace CleanArchitecture.Contracts.Tutorials;
 public record UpdateTutorialRequest(
     string Title,
     string Description,
-    bool Published);
+    bool Published,
+    Guid? CategoryId = null);

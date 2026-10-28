@@ -5,5 +5,6 @@ public record TutorialResponse(
     string Title,
     string Description,
     bool Published,
+    Guid? CategoryId,
     DateTime CreatedAt,
     DateTime UpdatedAt);

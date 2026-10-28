@@ -45,7 +45,11 @@ public class TutorialsController(ISender _mediator) : ApiController
     [HttpPost]
     public async Task<IActionResult> CreateTutorial(CreateTutorialRequest request)
     {
-        var command = new CreateTutorialCommand(request.Title, request.Description, request.Published);
+        var command = new CreateTutorialCommand(
+            request.Title,
+            request.Description,
+            request.Published,
+            request.CategoryId);
 
         var result = await _mediator.Send(command);
 
@@ -60,7 +64,12 @@ public class TutorialsController(ISender _mediator) : ApiController
     [HttpPut("{tutorialId:guid}")]
     public async Task<IActionResult> UpdateTutorial(Guid tutorialId, UpdateTutorialRequest request)
     {
-        var command = new UpdateTutorialCommand(tutorialId, request.Title, request.Description, request.Published);
+        var command = new UpdateTutorialCommand(
+            tutorialId,
+            request.Title,
+            request.Description,
+            request.Published,
+            request.CategoryId);
 
         var result = await _mediator.Send(command);
 
@@ -99,6 +108,7 @@ public class TutorialsController(ISender _mediator) : ApiController
             tutorial.Title,
             tutorial.Description,
             tutorial.Published,
+            tutorial.CategoryId,
             tutorial.CreatedAt,
             tutorial.UpdatedAt);
 }
