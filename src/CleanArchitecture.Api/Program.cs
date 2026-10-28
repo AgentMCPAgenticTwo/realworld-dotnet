@@ -22,6 +22,7 @@ var app = builder.Build();
     }
 
     app.UseHttpsRedirection();
+    app.UseCors(CleanArchitecture.Api.DependencyInjection.AllowFrontendCorsPolicy);
     app.UseAuthorization();
     app.MapControllers();
 

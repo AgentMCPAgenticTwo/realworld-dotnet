@@ -11,6 +11,7 @@ using CleanArchitecture.Infrastructure.Security.PolicyEnforcer;
 using CleanArchitecture.Infrastructure.Security.TokenGenerator;
 using CleanArchitecture.Infrastructure.Security.TokenValidation;
 using CleanArchitecture.Infrastructure.Services;
+using CleanArchitecture.Infrastructure.Tutorials.Persistence;
 using CleanArchitecture.Infrastructure.Users.Persistence;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -81,6 +82,7 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source = CleanArchitecture.sqlite"));
 
         services.AddScoped<IRemindersRepository, RemindersRepository>();
+        services.AddScoped<ITutorialsRepository, TutorialsRepository>();
         services.AddScoped<IUsersRepository, UsersRepository>();
 
         return services;
