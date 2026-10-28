@@ -1,5 +1,12 @@
 # Knowledge Update Log
 
+## 2026-10-28
+
+* **Update**: `overview.md` -- recorded `.github/workflows/api-correction.yml` in the running and
+  building table, the only file changed since the last run (project `realworld-dotnet`
+  @ `2650bfd28ce9976b5db0a140e2928725519d0af3`), trace `5301463f0930`. No source or test project
+  changed, so all module, architecture and convention concepts were left untouched.
+
 ## 2026-10-27
 
 * **Creation**: Full bundle generated from the codebase knowledge graph (project `realworld-dotnet`
