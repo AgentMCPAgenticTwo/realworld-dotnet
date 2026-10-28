@@ -1,13 +1,13 @@
 ---
 type: Architecture
 title: Layering and request flow
-description: Four-project onion layering with MediatR request pipeline, ErrorOr results and EF Core SQLite persistence.
+description: Four-project onion layering with MediatR request pipeline, ErrorOr results and EF Core PostgreSQL persistence.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/src
-tags: [architecture, layers, mediatr, clean-architecture]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+tags: [architecture, layers, mediatr, clean-architecture, postgres]
+generated: { by: sage-maintenance/claude-code, at: 2026-10-28T11:49:52Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ d56e8561a0fe55a0a123dab492ae019f009f7375
     title: Codebase knowledge graph
 status: stable
 ---
@@ -20,12 +20,15 @@ Dependencies point inward only. Domain references nothing in the solution.
 | --- | --- | --- |
 | Presentation | [Api](/modules/api.md), [Contracts](/modules/contracts.md) | Application, Contracts, Domain |
 | Application | [Application Common](/modules/application-common.md) and the feature modules | Domain |
-| Domain | [Domain Common](/modules/domain-common.md), [Users](/modules/domain-users.md), [Reminders](/modules/domain-reminders.md), [Tutorials](/modules/domain-tutorials.md) | — |
+| Domain | [Domain Common](/modules/domain-common.md), [Users](/modules/domain-users.md), [Reminders](/modules/domain-reminders.md), [Tutorials](/modules/domain-tutorials.md), [Categories](/modules/domain-categories.md) | — |
 | Infrastructure | [Persistence](/modules/infrastructure-persistence.md), [Security](/modules/infrastructure-security.md), [Background Services](/modules/infrastructure-background-services.md) | Application, Domain |
 
 Infrastructure is wired in only at composition time from `Program.cs`, so Application depends on
 abstractions (`IUsersRepository`, `IRemindersRepository`, `ITutorialsRepository`,
-`IJwtTokenGenerator`, `IDateTimeProvider`, `IAuthorizationService`) rather than implementations.
+`ICategoriesRepository`, `IJwtTokenGenerator`, `IDateTimeProvider`, `IAuthorizationService`)
+rather than implementations. The concrete provider choice — `UseNpgsql` in `AddPersistence` —
+likewise lives only in `Infrastructure/DependencyInjection.cs`, which is why the test hosts can
+substitute a different provider without touching Application code.
 
 # Request Flow
 
@@ -62,15 +65,15 @@ Every handler returns `ErrorOr<T>`; controllers translate failures through
 
 # Boundaries and Hotspots
 
-The graph reports two packages (`CleanArchitecture`, `TestCommon`) with 218 calls from source into
-test helpers and 19 back, i.e. `TestCommon` is a widely-shared factory layer rather than a
+The graph reports two packages (`CleanArchitecture`, `TestCommon`) with 231 calls from source into
+test helpers and 21 back, i.e. `TestCommon` is a widely-shared factory layer rather than a
 production dependency.
 
 Highest fan-in symbols:
 
 | Symbol | Fan-in |
 | --- | --- |
-| `AppDbContext.SaveChangesAsync` | 11 |
+| `AppDbContext.SaveChangesAsync` | 12 |
 | `Tutorial.Update` | 5 |
 | `AuthorizationBehavior.Handle` | 5 |
 | `IAuthorizationService.AuthorizeCurrentUser` | 5 |
@@ -89,9 +92,13 @@ funnels through it, so transaction or interception changes belong there.
 | Subscriptions | [Subscriptions use cases](/modules/application-subscriptions.md) | [Users](/modules/domain-users.md) | [Persistence](/modules/infrastructure-persistence.md) |
 | Tokens | [Tokens use cases](/modules/application-tokens.md) | [Users](/modules/domain-users.md) | [Security](/modules/infrastructure-security.md) |
 | Tutorials | [Tutorials use cases](/modules/application-tutorials.md) | [Tutorial](/modules/domain-tutorials.md) | [Persistence](/modules/infrastructure-persistence.md) |
+| Categories | [Categories use cases](/modules/application-categories.md) | [Category](/modules/domain-categories.md) | [Persistence](/modules/infrastructure-persistence.md) |
 
-Tutorials is the one feature with no user, subscription or authorization coupling: its controller
-is `[AllowAnonymous]` and its handlers touch only `ITutorialsRepository`.
+Tutorials and Categories are the two features with no user, subscription or authorization coupling:
+both controllers are `[AllowAnonymous]` and their handlers touch only `ITutorialsRepository` and
+`ICategoriesRepository`. They are coupled to each other in one direction only — the tutorial
+handlers call `ICategoriesRepository.ExistsAsync` to validate an incoming `CategoryId`, while no
+category code refers to tutorials.
 
 # Test Topology
 
@@ -99,4 +106,9 @@ is `[AllowAnonymous]` and its handlers touch only `ITutorialsRepository`.
 [application unit tests](/modules/tests-application-unittests.md) exercise the pipeline behaviors
 with substitutes; [subcutaneous tests](/modules/tests-subcutaneous.md) go through the real mediator
 against a SQLite test database; [integration tests](/modules/tests-api-integrationtests.md) drive
-real HTTP. All four consume [TestCommon](/modules/tests-testcommon.md).
+real HTTP against a disposable PostgreSQL container. All four consume
+[TestCommon](/modules/tests-testcommon.md).
+
+The two database layers differ deliberately: integration tests match production's Npgsql provider,
+subcutaneous tests keep SQLite for speed. A provider-specific mapping therefore only fails in the
+integration suite.

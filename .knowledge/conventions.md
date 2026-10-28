@@ -4,10 +4,10 @@ title: Solution conventions
 description: Naming, folder, result-handling, authorization and testing conventions used across the solution.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/src
 tags: [conventions, csharp, cqrs]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-28T11:49:52Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ d56e8561a0fe55a0a123dab492ae019f009f7375
     title: Codebase knowledge graph
 status: stable
 ---
@@ -23,7 +23,8 @@ holding one file per type:
 | `<Name>CommandHandler.cs` / `<Name>QueryHandler.cs` | `CreateTutorialCommandHandler.cs` |
 | `<Name>CommandValidator.cs` (optional) | `CreateTutorialCommandValidator.cs` |
 
-Requests are records implementing `IAuthorizeableRequest<ErrorOr<T>>`. Handlers are classes using
+User-scoped requests are records implementing `IAuthorizeableRequest<ErrorOr<T>>`; the anonymous
+tutorial and category requests are plain `IRequest<ErrorOr<T>>` records. Handlers are classes using
 primary constructors for injection (`public class XHandler(IRepo _repo)`), with the underscore
 prefix kept on the parameter name so the body reads like field access.
 
@@ -70,7 +71,10 @@ adds `Permission.<Feature>.cs` rather than editing a shared list.
   repository in `Infrastructure/<Feature>/Persistence/`.
 * Repositories implement the Application-layer interface and call `AppDbContext.SaveChangesAsync`
   themselves.
-* Migrations are in `Infrastructure/Migrations/` with the EF timestamp prefix.
+* Migrations are in `Infrastructure/Migrations/` with the EF timestamp prefix, generated against
+  the Npgsql provider.
+* Entity relationships are foreign-key only — `HasOne<T>().WithMany().HasForeignKey(...)` with no
+  navigation property on either side (`TutorialConfigurations` → `Category`).
 
 # Testing
 

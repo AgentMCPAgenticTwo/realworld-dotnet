@@ -1,12 +1,12 @@
 {
     "schema_version": 2,
-    "commit": "2650bfd28ce9976b5db0a140e2928725519d0af3",
-    "indexed_at": "2026-10-28T04:15:16Z",
+    "commit": "d56e8561a0fe55a0a123dab492ae019f009f7375",
+    "indexed_at": "2026-10-28T11:49:51Z",
     "project": "realworld-dotnet",
-    "nodes": 1834,
-    "edges": 5297,
-    "original_size": 4980736,
-    "compressed_size": 631867,
+    "nodes": 2033,
+    "edges": 5786,
+    "original_size": 5505024,
+    "compressed_size": 675488,
     "compression_level": 9,
     "reconcile_basis": "git-clean-head"
 }
