@@ -1,6 +1,6 @@
 name: api-correction
 
-# sage-maintenance-workflow-fingerprint: 935ee89c0de53c81
+# sage-maintenance-workflow-fingerprint: d6c4805856c03370
 # The second lap. The generation workflow builds a branch from task packages; this
 # applies a one-sentence correction to a branch that already exists ("make the primary
 # button green"), fired by the sage-maintenance service via repository_dispatch.
@@ -1048,7 +1048,7 @@ jobs:
           # The expected keys are generated from the service's CorrectionOutput model at
           # provision time, never hand-listed here — that is the only thing keeping the
           # writer (this step) and the reader (track.harvest) from drifting apart.
-          REQUIRED = ["trace_id", "branch", "maintenance_branch", "status", "summary", "files_changed", "lines_changed", "blockers", "visual_check", "context_sharing", "usage"]
+          REQUIRED = ["trace_id", "branch", "maintenance_branch", "status", "summary", "files_changed", "lines_changed", "blockers", "conventions", "visual_check", "context_sharing", "usage"]
 
           # Same fixed, stack-agnostic vocabulary as schemas.FieldSpec -- duplicated here
           # (not imported) because this script runs in the app repo's own Python 3, with
@@ -1141,7 +1141,7 @@ jobs:
               return _first_dict(raw, required)
 
           def split_report(text):
-              """(prose summary, applied list, skipped list) from the agent's reply.
+              """(prose summary, applied, skipped, conventions) from the agent's reply.
 
               The correction prompt asks for a bare-JSON accounting line as the
               very last thing in the reply. It is pulled off here so `summary`
@@ -1152,7 +1152,7 @@ jobs:
               """
               text = (text or '').strip()
               if not text:
-                  return '', [], []
+                  return '', [], [], []
 
               # Brace-balanced scan BACKWARDS from the final '}', so `start` is
               # the real beginning of the trailing object. Searching forward for
@@ -1172,13 +1172,13 @@ jobs:
                               start = i
                               break
               if start < 0:
-                  return text, [], []
+                  return text, [], [], []
               try:
                   tail = json.loads(text[start:end + 1], strict=False)
               except ValueError:
-                  return text, [], []
+                  return text, [], [], []
               if not isinstance(tail, dict) or not ('applied' in tail or 'skipped' in tail):
-                  return text, [], []
+                  return text, [], [], []
 
               applied = [str(a) for a in tail.get('applied') or [] if str(a).strip()]
               skipped = []
@@ -1196,7 +1196,11 @@ jobs:
               # cut, while the closing one is already past `end`.
               prose = re.sub(r'```(?:json)?\s*$', '', text[:start].rstrip()).rstrip()
               # A reply that was ONLY the JSON still needs a readable summary.
-              return (prose or '; '.join(applied) or text), applied, skipped
+              # Lasting product rules the change set or followed: the run's
+              # contribution to project memory (see CorrectionOutput.conventions).
+              conventions = [str(c).strip() for c in tail.get('conventions') or []
+                             if str(c).strip()]
+              return (prose or '; '.join(applied) or text), applied, skipped, conventions
 
           result = load('/tmp/correction.result.json', {}) or {}
           u = result.get('usage') or {}
@@ -1216,7 +1220,7 @@ jobs:
           empty = os.environ.get('EMPTY') == 'true'
           files = [f for f in os.environ.get('CHANGED_FILES', '').splitlines() if f.strip()]
 
-          summary_text, applied, skipped = split_report(result.get('result') or '')
+          summary_text, applied, skipped, conventions = split_report(result.get('result') or '')
 
           # What the next step on the OTHER side gets to read. Shape mirrors the service's
           # SharedContext model; anything the extractor did not report stays empty rather
@@ -1282,6 +1286,7 @@ jobs:
               'files_changed': files,
               'lines_changed': int(os.environ.get('LINES') or 0),
               'blockers': blockers,
+              'conventions': conventions[:10],
               'visual_check': visual,
               'context_sharing': shared,
               'usage': {
