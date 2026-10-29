@@ -4,10 +4,10 @@ title: tests/CleanArchitecture.Api.IntegrationTests
 description: HTTP-level tests driving the real controllers through WebApplicationFactory and a SQLite test database.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/tests/CleanArchitecture.Api.IntegrationTests
 tags: [tests, integration, http, aspnetcore]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-29T09:46:50Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ 77aee7bc72e63696dcba05b7d841c54d863481b2
     title: Codebase knowledge graph
 status: stable
 ---
@@ -29,6 +29,7 @@ status: stable
 | --- | --- |
 | `Controllers/SubscriptionControllers.CreateSubscriptionTests.cs` | Token generation then `POST users/{userId}/subscriptions`, including the permission-denied path |
 | `Controllers/TutorialsControllerTests.cs` | The `api/tutorials` CRUD surface over HTTP |
+| `Controllers/HealthControllerTests.cs` | `GET api/health` without a token returns `200 OK` and `status: "ok"` |
 
 # Notes
 

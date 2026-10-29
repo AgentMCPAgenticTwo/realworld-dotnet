@@ -4,10 +4,10 @@ title: src/CleanArchitecture.Api
 description: ASP.NET Core presentation layer hosting the controllers, CORS policy and application host.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/src/CleanArchitecture.Api
 tags: [api, aspnetcore, controllers, presentation]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-29T09:46:50Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ 77aee7bc72e63696dcba05b7d841c54d863481b2
     title: Codebase knowledge graph
 status: stable
 ---
@@ -29,6 +29,7 @@ here; controllers build a command or query, `Send` it, and `Match` the result.
 | `Controllers/SubscriptionsController.cs` | `users/{userId:guid}/subscriptions` |
 | `Controllers/RemindersController.cs` | `users/{userId:guid}/subscriptions/{subscriptionId:guid}/reminders` |
 | `Controllers/TutorialsController.cs` | `api/tutorials` |
+| `Controllers/HealthController.cs` | `api/health` |
 
 # Endpoints
 
@@ -49,11 +50,14 @@ here; controllers build a command or query, `Send` it, and `Match` the result.
 | `PUT api/tutorials/{tutorialId}` | `TutorialsController.UpdateTutorial` | `UpdateTutorialCommand` |
 | `DELETE api/tutorials/{tutorialId}` | `TutorialsController.DeleteTutorial` | `DeleteTutorialCommand` |
 | `DELETE api/tutorials` | `TutorialsController.DeleteAllTutorials` | `DeleteAllTutorialsCommand` |
+| `GET api/health` | `HealthController.GetHealth` | nothing — returns `HealthResponse("ok")` directly |
 
 # Notes
 
-* `TokensController` and `TutorialsController` are `[AllowAnonymous]`; the other two inherit
-  `[Authorize]` from `ApiController`.
+* `TokensController`, `TutorialsController` and `HealthController` are `[AllowAnonymous]`; the
+  other two inherit `[Authorize]` from `ApiController`.
+* `HealthController.GetHealth` is the only action that never touches MediatR — it is a liveness
+  probe answering `200 OK` with a constant body.
 * Both `TokensController` and `SubscriptionsController` short-circuit with a 400 `Problem` when
   `DomainSubscriptionType.TryFromName` fails, before any mediator call.
 * `UpdateTutorial` and `DeleteAllTutorials` answer with `MessageResponse`; `DeleteTutorial`

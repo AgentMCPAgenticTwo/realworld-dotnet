@@ -4,10 +4,10 @@ title: realworld-dotnet
 description: Clean Architecture .NET 8 reference service exposing reminder, subscription, token and tutorial HTTP APIs.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/
 tags: [dotnet, csharp, clean-architecture, aspnetcore, overview]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-28T04:15:17Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-29T09:46:50Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 2650bfd28ce9976b5db0a140e2928725519d0af3
+    resource: codebase-memory-mcp project realworld-dotnet @ 77aee7bc72e63696dcba05b7d841c54d863481b2
     title: Codebase knowledge graph
 status: stable
 ---
@@ -68,6 +68,7 @@ See [Architecture](/architecture.md) for how these depend on each other.
 | `users/{userId:guid}/subscriptions` | `SubscriptionsController` | inherited `[Authorize]` |
 | `users/{userId:guid}/subscriptions/{subscriptionId:guid}/reminders` | `RemindersController` | inherited `[Authorize]` |
 | `api/tutorials` | `TutorialsController` | `[AllowAnonymous]` |
+| `api/health` | `HealthController` | `[AllowAnonymous]` |
 
 `ApiController` is the shared base: `[ApiController]`, `[Authorize]`, and `Problem(List<Error>)`
 mapping `Conflict→409`, `Validation→400`, `NotFound→404`, `Unauthorized→403`, else `500`.
