@@ -2,6 +2,14 @@
 
 ## 2026-10-29
 
+* **Update**: `overview.md` -- `.github/workflows/api-correction.yml` was the only file changed
+  since the last run (project `realworld-dotnet`
+  @ `d27af1293613120b9396c5c1518037435ae31982`), trace `a14d8f5f0766`. Sharpened its row in the
+  running and building table: the workflow has no `workflow_dispatch` trigger, it fires only on
+  `repository_dispatch` type `api-correction` and pushes to the `api-correction/<trace_id>` branch
+  it checks out. No source or test project changed, so all module, architecture and convention
+  concepts were left untouched.
+
 * **Update**: `overview.md`, `modules/api.md`, `modules/contracts.md` and
   `modules/tests-api-integrationtests.md` -- recorded the new anonymous liveness endpoint
   `GET api/health` (`HealthController.GetHealth`), its `HealthResponse` DTO and the
