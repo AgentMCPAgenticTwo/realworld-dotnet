@@ -1,0 +1,38 @@
+{
+  "trace_id": "2eb24605a546",
+  "branch": "api-correction/2eb24605a546",
+  "maintenance_branch": "api-correction/2eb24605a546",
+  "status": "BLOCKED",
+  "summary": "The backend side of this contract is already in place and spelled exactly as the contract requires, so I made no changes.\n\n- `src/CleanArchitecture.Api/Controllers/HealthController.cs` — `[Route(\"api/health\")]`, `[AllowAnonymous]`, `GET` returning `200 {\"status\":\"ok\"}` (camelCase serialization), following the `api/tutorials` route convention and the `ApiController` base.\n- `src/CleanArchitecture.Contracts/Common/HealthResponse.cs` — `record HealthResponse(string Status)`.\n- An integration test for it already exists under `tests/`.\n\nThe requested change — a loading indicator while the health check is in progress, keeping green for `ok` and red otherwise — is view state in the Angular footer (`app.component.ts/html/css`), not something a .NET API can express; inventing an extra field for it would add contract the other side did not ask for. Applied the recorded project rule that backend health is surfaced only as `{\"status\":\"ok\"}` at `GET /api/health` and the footer renders the raw value.",
+  "files_changed": [],
+  "lines_changed": 0,
+  "blockers": [
+    "The agent made no changes. The instruction may already be satisfied, or it may not map onto the code in this branch.",
+    "Not applied -- Add a loading indicator to the API health status in the footer while the check is in progress, preserving green on success and red on failure: Frontend-only view state in the Angular footer; the backend has no part to play and faking one would invent contract fields",
+    "Not applied -- Integrate GET /api/health per the shared contract: Already true — HealthController + HealthResponse return exactly {\"status\":\"ok\"} at api/health"
+  ],
+  "conventions": [],
+  "visual_check": {
+    "verdict": "skipped",
+    "evidence": "",
+    "screenshot_path": ""
+  },
+  "context_sharing": {
+    "target": "backend",
+    "branch": "api-correction/2eb24605a546",
+    "base_path": "",
+    "endpoints": [],
+    "types": {},
+    "notes": ""
+  },
+  "usage": {
+    "num_turns": 3,
+    "duration_ms": 11895,
+    "total_cost_usd": 0.1158659,
+    "input_tokens": 2487,
+    "output_tokens": 749,
+    "cache_creation_input_tokens": 12076,
+    "cache_read_input_tokens": 71413,
+    "is_error": false
+  }
+}
