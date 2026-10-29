@@ -1,0 +1,38 @@
+{
+  "trace_id": "a14d8f5f0766",
+  "branch": "api-correction/a14d8f5f0766",
+  "maintenance_branch": "api-correction/a14d8f5f0766",
+  "status": "BLOCKED",
+  "summary": "I checked this repository before changing anything.\n\n**The requested change is frontend-only.** \"Change the health status text in the footer to green when the API is ok and red when it is not\" is a styling/binding change in the Angular footer (`app.component.html` / `.css` in `realworld-app-angular-v20`) — there is nothing in a .NET API that can colour text, and faking it here (e.g. returning a colour field the contract doesn't have) would be inventing contract the other side didn't ask for.\n\n**The backend side of the contract is already in place**, spelled exactly as the contract requires, from the earlier `a8e86da2e5ea` correction:\n\n- `src/CleanArchitecture.Api/Controllers/HealthController.cs:8` — `[Route(\"api/health\")] [AllowAnonymous]`, `GET` returning `Ok(new HealthResponse(\"ok\"))`.\n- `src/CleanArchitecture.Contracts/Common/HealthResponse.cs:3` — `record HealthResponse(string Status)`, serialized by ASP.NET Core's default camelCase policy as `{\"status\":\"ok\"}` — which is what the footer needs to read `API: ok` and to distinguish ok from not-ok.\n- `tests/CleanArchitecture.Api.IntegrationTests/Controllers/HealthControllerTests.cs` — asserts 200 and `status == \"ok\"` anonymously.\n\nSo every item on this side was already true, and I made no edits. Project rules applied: route spelled `api/health` to match the existing `api/tutorials` convention, and the response field kept as `status` so the two sides agree.\n\nThe colouring (green when `status` is `ok`, red on `unavailable`/error) is left for the frontend repository `realworld-app-angular-v20`.",
+  "files_changed": [],
+  "lines_changed": 0,
+  "blockers": [
+    "The agent made no changes. The instruction may already be satisfied, or it may not map onto the code in this branch.",
+    "Not applied -- Change the health status text in the footer to green when the API is ok and red when it is not: Belongs to the counterpart frontend repository (realworld-app-angular-v20) — it is Angular template/CSS work; nothing in this .NET backend controls footer presentation",
+    "Not applied -- Integrate GET /api/health per the shared contract: Already true in this repository: HealthController at route api/health returns HealthResponse(Status) serialized as {\"status\":\"ok\"}, with an integration test covering it"
+  ],
+  "conventions": [],
+  "visual_check": {
+    "verdict": "skipped",
+    "evidence": "",
+    "screenshot_path": ""
+  },
+  "context_sharing": {
+    "target": "backend",
+    "branch": "api-correction/a14d8f5f0766",
+    "base_path": "",
+    "endpoints": [],
+    "types": {},
+    "notes": ""
+  },
+  "usage": {
+    "num_turns": 5,
+    "duration_ms": 19518,
+    "total_cost_usd": 0.2270569,
+    "input_tokens": 2505,
+    "output_tokens": 1506,
+    "cache_creation_input_tokens": 29601,
+    "cache_read_input_tokens": 54403,
+    "is_error": false
+  }
+}
