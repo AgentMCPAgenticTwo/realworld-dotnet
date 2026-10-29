@@ -1,5 +1,15 @@
 # Knowledge Update Log
 
+## 2026-10-29
+
+* **Update**: `overview.md`, `modules/api.md`, `modules/contracts.md` and
+  `modules/tests-api-integrationtests.md` -- recorded the new anonymous liveness endpoint
+  `GET api/health` (`HealthController.GetHealth`), its `HealthResponse` DTO and the
+  `HealthControllerTests` suite (project `realworld-dotnet`
+  @ `77aee7bc72e63696dcba05b7d841c54d863481b2`), trace `a8e86da2e5ea`.
+  `.github/workflows/api-correction.yml` also changed but is already described in `overview.md`.
+  Layering is unchanged, so `architecture.md` and `conventions.md` were left untouched.
+
 ## 2026-10-28
 
 * **Update**: `overview.md` -- recorded `.github/workflows/api-correction.yml` in the running and

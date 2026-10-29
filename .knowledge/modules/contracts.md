@@ -4,10 +4,10 @@ title: src/CleanArchitecture.Contracts
 description: Wire DTO records shared between the API and its clients, grouped per feature.
 resource: https://github.com/AgentMCPAgenticTwo/realworld-dotnet/tree/main/src/CleanArchitecture.Contracts
 tags: [contracts, dto, api]
-generated: { by: sage-maintenance/claude-code, at: 2026-10-27T12:15:02Z }
+generated: { by: sage-maintenance/claude-code, at: 2026-10-29T09:46:50Z }
 sources:
   - id: cbm-graph
-    resource: codebase-memory-mcp project realworld-dotnet @ 40766801559612ce58c0226d1768da27f4b2e358
+    resource: codebase-memory-mcp project realworld-dotnet @ 77aee7bc72e63696dcba05b7d841c54d863481b2
     title: Codebase knowledge graph
 status: stable
 ---
@@ -22,6 +22,7 @@ Application, so it can be shipped to clients independently.
 | File | Type |
 | --- | --- |
 | `Common/SubscriptionType.cs` | `SubscriptionType` enum (`Basic`, `Pro`) — the wire form of the domain smart enum |
+| `Common/HealthResponse.cs` | `HealthResponse` — `{ status }` body of the liveness endpoint |
 | `Tokens/GenerateTokenRequest.cs` | `GenerateTokenRequest` |
 | `Tokens/TokenResponse.cs` | `TokenResponse` |
 | `Subscriptions/CreateSubscriptionRequest.cs` | `CreateSubscriptionRequest` |
