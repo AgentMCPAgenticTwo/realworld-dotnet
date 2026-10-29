@@ -1,0 +1,60 @@
+{
+  "trace_id": "a8e86da2e5ea",
+  "branch": "api-correction/a8e86da2e5ea",
+  "maintenance_branch": "api-correction/a8e86da2e5ea",
+  "status": "SUCCESS",
+  "summary": "Added the backend endpoint only.\n\n- `src/CleanArchitecture.Contracts/Common/HealthResponse.cs` — `record HealthResponse(string Status)`, serialized camelCase as `{\"status\":\"ok\"}`.\n- `src/CleanArchitecture.Api/Controllers/HealthController.cs` — `[Route(\"api/health\")] [AllowAnonymous]` `GET` returning `Ok(new HealthResponse(\"ok\"))`, following the existing `api/tutorials` route convention and `ApiController` base.\n- `tests/.../Controllers/HealthControllerTests.cs` — integration test asserting 200 + `status == \"ok\"` anonymously.\n\nSolution builds clean. The footer \"API: ok\" is Angular view work and belongs to the frontend repo (`realworld-app-angular-v20`); it consumes `GET /api/health`, which is already CORS-allowed for `http://localhost:4200`.",
+  "files_changed": [
+    "src/CleanArchitecture.Api/Controllers/HealthController.cs",
+    "src/CleanArchitecture.Contracts/Common/HealthResponse.cs",
+    "tests/CleanArchitecture.Api.IntegrationTests/Controllers/HealthControllerTests.cs"
+  ],
+  "lines_changed": 49,
+  "blockers": [
+    "Not applied -- Show \"API: ok\" in the page footer: frontend view work — belongs to the separate Angular repository realworld-app-angular-v20"
+  ],
+  "conventions": [],
+  "visual_check": {
+    "verdict": "skipped",
+    "evidence": "",
+    "screenshot_path": ""
+  },
+  "context_sharing": {
+    "target": "backend",
+    "branch": "api-correction/a8e86da2e5ea",
+    "base_path": "/api",
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/api/health",
+        "request_fields": [],
+        "response_fields": [
+          {
+            "name": "status",
+            "type": "string"
+          }
+        ],
+        "purpose": "Anonymous health check returning service status."
+      }
+    ],
+    "types": {
+      "HealthResponse": [
+        {
+          "name": "Status",
+          "type": "string"
+        }
+      ]
+    },
+    "notes": "The endpoint is anonymous ([AllowAnonymous] overriding the [Authorize] on the ApiController base) and returns 200 OK with a body whose Status value is the literal \"ok\"; JSON property casing is not explicitly configured in these files, so the wire name follows the host's default serializer settings (camelCase \"status\" under ASP.NET Core defaults)."
+  },
+  "usage": {
+    "num_turns": 14,
+    "duration_ms": 59031,
+    "total_cost_usd": 0.3622958,
+    "input_tokens": 2634,
+    "output_tokens": 2827,
+    "cache_creation_input_tokens": 34670,
+    "cache_read_input_tokens": 342906,
+    "is_error": false
+  }
+}
